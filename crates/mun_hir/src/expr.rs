@@ -438,11 +438,18 @@ impl Expr {
 
 /// Similar to `ast::PatKind`
 #[derive(Debug, Clone, Eq, PartialEq)]
+pub enum BindingAnnotation {
+    Mutable,
+    Unannotated,
+}
+
+/// Similar to `ast::PatKind`
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Pat {
-    Missing,             // Indicates an error
-    Wild,                // `_`
-    Path(Path),          // E.g. `foo::bar`
-    Bind { name: Name }, // E.g. `a`
+    Missing,                                      // Indicates an error
+    Wild,                                         // `_`
+    Path(Path),                                   // E.g. `foo::bar`
+    Bind { name: Name, mode: BindingAnnotation }, // E.g. `a`
 }
 
 impl Pat {
@@ -878,7 +885,17 @@ impl<'a> ExprCollector<'a> {
                     .name()
                     .map(|nr| nr.as_name())
                     .unwrap_or_else(Name::missing);
-                Pat::Bind { name }
+
+                let binding_annotation = if bp.has_mut_token() {
+                    BindingAnnotation::Mutable
+                } else {
+                    BindingAnnotation::Unannotated
+                };
+
+                Pat::Bind {
+                    name,
+                    mode: binding_annotation,
+                }
             }
             ast::PatKind::PlaceholderPat(_) => Pat::Wild,
         };

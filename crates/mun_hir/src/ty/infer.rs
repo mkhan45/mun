@@ -17,6 +17,7 @@ use rustc_hash::FxHashSet;
 use std::ops::Index;
 use std::sync::Arc;
 
+mod mut_bind;
 mod place_expr;
 mod type_variable;
 mod unify;
@@ -319,6 +320,13 @@ impl<'a> InferenceResultBuilder<'a> {
                                 id: tgt_expr,
                                 lhs: *lhs,
                             })
+                        } else if !self.check_mut_bind(&resolver, *lhs) {
+                            self.diagnostics.push(
+                                InferenceDiagnostic::ReassignmentToImmutableBinding {
+                                    id: tgt_expr,
+                                    lhs: *lhs,
+                                },
+                            )
                         }
                     };
                     let rhs_expected = op::binary_op_rhs_expectation(*op, lhs_ty.clone());
@@ -1021,7 +1029,8 @@ mod diagnostics {
             AccessUnknownField, BreakOutsideLoop, BreakWithValueOutsideLoop, CannotApplyBinaryOp,
             CannotApplyUnaryOp, ExpectedFunction, FieldCountMismatch, IncompatibleBranch,
             InvalidLHS, LiteralOutOfRange, MismatchedStructLit, MismatchedType, MissingElseBranch,
-            MissingFields, NoFields, NoSuchField, ParameterCountMismatch, ReturnMissingExpression,
+            MissingFields, NoFields, NoSuchField, ParameterCountMismatch,
+            ReassignmentToImmutableBinding, ReturnMissingExpression,
         },
         diagnostics::{CyclicType, DiagnosticSink, UnresolvedType, UnresolvedValue},
         ty::infer::ExprOrPatId,
@@ -1073,6 +1082,10 @@ mod diagnostics {
             ty: Ty,
         },
         InvalidLHS {
+            id: ExprId,
+            lhs: ExprId,
+        },
+        ReassignmentToImmutableBinding {
             id: ExprId,
             lhs: ExprId,
         },
@@ -1289,6 +1302,23 @@ mod diagnostics {
                         .value
                         .either(|it| it.syntax_node_ptr(), |it| it.syntax_node_ptr());
                     sink.push(InvalidLHS {
+                        file,
+                        expr: id,
+                        lhs,
+                    });
+                }
+                InferenceDiagnostic::ReassignmentToImmutableBinding { id, lhs } => {
+                    let id = body
+                        .expr_syntax(*id)
+                        .unwrap()
+                        .value
+                        .either(|it| it.syntax_node_ptr(), |it| it.syntax_node_ptr());
+                    let lhs = body
+                        .expr_syntax(*lhs)
+                        .unwrap()
+                        .value
+                        .either(|it| it.syntax_node_ptr(), |it| it.syntax_node_ptr());
+                    sink.push(ReassignmentToImmutableBinding {
                         file,
                         expr: id,
                         lhs,

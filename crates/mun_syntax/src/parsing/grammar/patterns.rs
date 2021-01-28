@@ -2,7 +2,7 @@ use super::*;
 
 pub(super) const PATTERN_FIRST: TokenSet = expressions::LITERAL_FIRST
     .union(paths::PATH_FIRST)
-    .union(TokenSet::new(&[T![-], T![_]]));
+    .union(TokenSet::new(&[T![-], T![_], T![mut]]));
 
 pub(super) fn pattern(p: &mut Parser) {
     pattern_r(p, PATTERN_FIRST);
@@ -13,18 +13,15 @@ pub(super) fn pattern_r(p: &mut Parser, recovery_set: TokenSet) {
 }
 
 fn atom_pat(p: &mut Parser, recovery_set: TokenSet) -> Option<CompletedMarker> {
-    let t1 = p.nth(0);
-    if t1 == IDENT {
-        return Some(bind_pat(p));
-    }
-
-    let m = match t1 {
+    let m = match p.nth(0) {
+        IDENT | T![mut] => bind_pat(p),
         T![_] => placeholder_pat(p),
         _ => {
             p.error_recover("expected pattern", recovery_set);
             return None;
         }
     };
+
     Some(m)
 }
 
@@ -37,6 +34,7 @@ fn placeholder_pat(p: &mut Parser) -> CompletedMarker {
 
 fn bind_pat(p: &mut Parser) -> CompletedMarker {
     let m = p.start();
+    p.eat(T![mut]);
     name(p);
     m.complete(p, BIND_PAT)
 }

@@ -274,6 +274,32 @@ impl Diagnostic for InvalidLHS {
 }
 
 #[derive(Debug)]
+pub struct ReassignmentToImmutableBinding {
+    /// The file that contains the expressions
+    pub file: FileId,
+
+    /// The expression containing the `lhs`
+    pub expr: SyntaxNodePtr,
+
+    /// The left-hand side of the expression.
+    pub lhs: SyntaxNodePtr,
+}
+
+impl Diagnostic for ReassignmentToImmutableBinding {
+    fn message(&self) -> String {
+        "cannot reassign to immutable pattern".to_string()
+    }
+
+    fn source(&self) -> InFile<SyntaxNodePtr> {
+        InFile::new(self.file, self.lhs)
+    }
+
+    fn as_any(&self) -> &(dyn Any + Send + 'static) {
+        self
+    }
+}
+
+#[derive(Debug)]
 pub struct MissingElseBranch {
     pub file: FileId,
     pub if_expr: SyntaxNodePtr,

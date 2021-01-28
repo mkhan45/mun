@@ -1,0 +1,44 @@
+---
+source: crates/mun_syntax/src/tests/parser.rs
+expression: "fn foo(mut a: i32) {\n    a += 5\n}"
+---
+SOURCE_FILE@[0; 33)
+  FUNCTION_DEF@[0; 33)
+    FN_KW@[0; 2) "fn"
+    WHITESPACE@[2; 3) " "
+    NAME@[3; 6)
+      IDENT@[3; 6) "foo"
+    PARAM_LIST@[6; 18)
+      L_PAREN@[6; 7) "("
+      PARAM@[7; 17)
+        BIND_PAT@[7; 12)
+          MUT_KW@[7; 10) "mut"
+          WHITESPACE@[10; 11) " "
+          NAME@[11; 12)
+            IDENT@[11; 12) "a"
+        COLON@[12; 13) ":"
+        WHITESPACE@[13; 14) " "
+        PATH_TYPE@[14; 17)
+          PATH@[14; 17)
+            PATH_SEGMENT@[14; 17)
+              NAME_REF@[14; 17)
+                IDENT@[14; 17) "i32"
+      R_PAREN@[17; 18) ")"
+    WHITESPACE@[18; 19) " "
+    BLOCK_EXPR@[19; 33)
+      L_CURLY@[19; 20) "{"
+      WHITESPACE@[20; 25) "\n    "
+      BIN_EXPR@[25; 31)
+        PATH_EXPR@[25; 26)
+          PATH@[25; 26)
+            PATH_SEGMENT@[25; 26)
+              NAME_REF@[25; 26)
+                IDENT@[25; 26) "a"
+        WHITESPACE@[26; 27) " "
+        PLUSEQ@[27; 29) "+="
+        WHITESPACE@[29; 30) " "
+        LITERAL@[30; 31)
+          INT_NUMBER@[30; 31) "5"
+      WHITESPACE@[31; 32) "\n"
+      R_CURLY@[32; 33) "}"
+

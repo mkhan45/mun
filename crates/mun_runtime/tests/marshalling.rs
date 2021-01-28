@@ -139,9 +139,9 @@ fn fibonacci_loop() {
     let driver = CompileAndRunTestDriver::new(
         r#"
     pub fn fibonacci(n:i64)->i64 {
-        let a = 0;
-        let b = 1;
-        let i = 1;
+        let mut a = 0;
+        let mut b = 1;
+        let mut i = 1;
         loop {
             if i > n {
                 return a
@@ -168,9 +168,9 @@ fn fibonacci_loop_break() {
     let driver = CompileAndRunTestDriver::new(
         r#"
     pub fn fibonacci(n:i64)->i64 {
-        let a = 0;
-        let b = 1;
-        let i = 1;
+        let mut a = 0;
+        let mut b = 1;
+        let mut i = 1;
         loop {
             if i > n {
                 break a;
@@ -197,9 +197,9 @@ fn fibonacci_while() {
     let driver = CompileAndRunTestDriver::new(
         r#"
     pub fn fibonacci(n:i64)->i64 {
-        let a = 0;
-        let b = 1;
-        let i = 1;
+        let mut a = 0;
+        let mut b = 1;
+        let mut i = 1;
         while i <= n {
             let sum = a + b;
             a = b;
@@ -306,9 +306,9 @@ fn fields() {
         r#"
         struct(gc) Foo { a:i32, b:i32 };
         pub fn main(foo:i32)->bool {
-            let a = Foo { a: foo, b: foo };
+            let mut a = Foo { a: foo, b: foo };
             a.a += a.b;
-            let result = a;
+            let mut result = a;
             result.a += a.b;
             result.a == a.a
         }

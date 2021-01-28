@@ -121,6 +121,29 @@ fn expression_statement() {
 }
 
 #[test]
+fn mutable_variable() {
+    snapshot_test(
+        r#"
+    fn foo() {
+        let mut a = 5
+        a += 5
+    }
+    "#,
+    )
+}
+
+#[test]
+fn mutable_argument() {
+    snapshot_test(
+        r#"
+    fn foo(mut a: i32) {
+        a += 5
+    }
+    "#,
+    )
+}
+
+#[test]
 fn function_calls() {
     snapshot_test(
         r#"

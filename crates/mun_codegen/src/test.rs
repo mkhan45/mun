@@ -172,7 +172,7 @@ fn function_arguments() {
 fn assignment_op_bool() {
     test_snapshot(
         r#"
-    pub fn assign(a: bool, b: bool) -> bool {
+    pub fn assign(mut a: bool, mut b: bool) -> bool {
         a = b;
         a
     }
@@ -207,12 +207,12 @@ fn assignment_op_struct() {
     struct(value) Value(i32, i32);
     struct(gc) Heap(f64, f64);
 
-    pub fn assign_value(a: Value, b: Value) -> Value {
+    pub fn assign_value(mut a: Value, b: Value) -> Value {
         a = b;
         a
     }
 
-    pub fn assign_heap(a: Heap, b: Heap) -> Heap {
+    pub fn assign_heap(mut a: Heap, b: Heap) -> Heap {
         a = b;
         a
     }
@@ -235,27 +235,27 @@ macro_rules! test_number_operator_types {
                 #[test]
                 fn [<assignment_op_ $ty>]() {
                     test_snapshot(&format!(r#"
-    pub fn assign(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign(mut a: {ty}, b: {ty}) -> {ty} {{
         a = b;
         a
     }}
-    pub fn assign_add(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_add(mut a: {ty}, b: {ty}) -> {ty} {{
         a += b;
         a
     }}
-    pub fn assign_subtract(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_subtract(mut a: {ty}, b: {ty}) -> {ty} {{
         a -= b;
         a
     }}
-    pub fn assign_multiply(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_multiply(mut a: {ty}, b: {ty}) -> {ty} {{
         a *= b;
         a
     }}
-    pub fn assign_divide(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_divide(mut a: {ty}, b: {ty}) -> {ty} {{
         a /= b;
         a
     }}
-    pub fn assign_remainder(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_remainder(mut a: {ty}, b: {ty}) -> {ty} {{
         a %= b;
         a
     }}
@@ -335,15 +335,15 @@ macro_rules! test_bit_operator_types  {
                 #[test]
                 fn [<assign_bit_op_ $ty>]() {
                     test_snapshot(&format!(r#"
-    pub fn assign_bitand(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_bitand(mut a: {ty}, b: {ty}) -> {ty} {{
         a &= b;
         a
     }}
-    pub fn assign_bitor(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_bitor(mut a: {ty}, b: {ty}) -> {ty} {{
         a |= b;
         a
     }}
-    pub fn assign_bitxor(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_bitxor(mut a: {ty}, b: {ty}) -> {ty} {{
         a ^= b;
         a
     }}
@@ -377,11 +377,11 @@ macro_rules! test_shift_operator_types  {
                 #[test]
                 fn [<assign_shift_op_ $ty>]() {
                     test_snapshot(&format!(r#"
-    pub fn assign_leftshift(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_leftshift(mut a: {ty}, b: {ty}) -> {ty} {{
         a <<= b;
         a
     }}
-    pub fn assign_rightshift(a: {ty}, b: {ty}) -> {ty} {{
+    pub fn assign_rightshift(mut a: {ty}, b: {ty}) -> {ty} {{
         a >>= b;
         a
     }}
@@ -433,31 +433,31 @@ fn update_operators() {
     test_snapshot(
         r#"
     pub fn add(a:i32, b:i32) -> i32 {
-      let result = a
+      let mut result = a
       result += b
       result
     }
 
     pub fn subtract(a:i32, b:i32) -> i32 {
-      let result = a
+      let mut result = a
       result -= b
       result
     }
 
     pub fn multiply(a:i32, b:i32) -> i32 {
-      let result = a
+      let mut result = a
       result *= b
       result
     }
 
     pub fn divide(a:i32, b:i32) -> i32 {
-      let result = a
+      let mut result = a
       result /= b
       result
     }
 
-    pub fn remainder(a:i32, b:i32) -> i32 {
-      let result = a
+    pub fn remainder(mut a:i32, mut b:i32) -> i32 {
+      let mut result = a
       result %= b
       result
     }
@@ -469,7 +469,7 @@ fn update_operators() {
 fn update_parameter() {
     test_snapshot(
         r#"
-    pub fn add_three(a:i32) -> i32 {
+    pub fn add_three(mut a:i32) -> i32 {
       a += 3;
       a
     }
@@ -553,9 +553,9 @@ fn fibonacci_loop() {
     test_snapshot(
         r#"
     pub fn fibonacci(n:i32) -> i32 {
-        let a = 0;
-        let b = 1;
-        let i = 1;
+        let mut a = 0;
+        let mut b = 1;
+        let mut i = 1;
         loop {
             if i > n {
                 return a
@@ -664,7 +664,7 @@ fn loop_expr() {
 fn loop_break_expr() {
     test_snapshot(
         r#"
-    pub fn foo(n:i32) -> i32 {
+    pub fn foo(mut n:i32) -> i32 {
         loop {
             if n > 5 {
                 break n;
@@ -683,7 +683,7 @@ fn loop_break_expr() {
 fn while_expr() {
     test_snapshot(
         r#"
-    pub fn foo(n:i32) {
+    pub fn foo(mut n:i32) {
         while n<3 {
             n += 1;
         };
@@ -764,7 +764,7 @@ fn gc_struct() {
     struct(gc) Foo { a: i32, b: i32 };
 
     pub fn foo() {
-        let a = Foo { a: 3, b: 4 };
+        let mut a = Foo { a: 3, b: 4 };
         a.b += 3;
         let b = a;
     }

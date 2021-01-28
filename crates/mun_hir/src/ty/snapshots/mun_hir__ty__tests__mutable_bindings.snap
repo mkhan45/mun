@@ -1,0 +1,10 @@
+---
+source: crates/mun_hir/src/ty/tests.rs
+expression: "fn foo(a:i32) {\n    a += 5; // error: cannot reassign to immutable pattern\n}"
+---
+[20; 21): cannot reassign to immutable pattern
+[7; 8) 'a': i32
+[14; 76) '{     ...tern }': nothing
+[20; 21) 'a': i32
+[20; 26) 'a += 5': nothing
+[25; 26) '5': i32

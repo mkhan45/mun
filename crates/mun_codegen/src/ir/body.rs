@@ -102,7 +102,7 @@ impl<'db, 'ink, 't> BodyIrGenerator<'db, 'ink, 't> {
             let body = self.body.clone(); // Avoid borrow issues
 
             match &body[*pat] {
-                Pat::Bind { name } => {
+                Pat::Bind { name, .. } => {
                     let name = name.to_string();
                     let param = self.fn_value.get_nth_param(i as u32).unwrap();
                     let builder = self.new_alloca_builder();
@@ -528,7 +528,7 @@ impl<'db, 'ink, 't> BodyIrGenerator<'db, 'ink, 't> {
         };
 
         match &self.body[pat] {
-            Pat::Bind { name } => {
+            Pat::Bind { name, .. } => {
                 let builder = self.new_alloca_builder();
                 let pat_ty = self.infer[pat].clone();
                 let ty = self

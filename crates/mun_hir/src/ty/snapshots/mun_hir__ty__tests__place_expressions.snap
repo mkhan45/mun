@@ -1,13 +1,13 @@
 ---
 source: crates/mun_hir/src/ty/tests.rs
-expression: "fn foo(a:i32) {\n    a += 3;\n    3 = 5; // error: invalid left hand side of expression\n}"
+expression: "fn foo(mut a:i32) {\n    a += 3;\n    3 = 5; // error: invalid left hand side of expression\n}"
 ---
-[32; 33): invalid left hand side of expression
-[7; 8) 'a': i32
-[14; 87) '{     ...sion }': nothing
-[20; 21) 'a': i32
-[20; 26) 'a += 3': nothing
-[25; 26) '3': i32
-[32; 33) '3': i32
-[32; 37) '3 = 5': nothing
-[36; 37) '5': i32
+[36; 37): invalid left hand side of expression
+[7; 12) 'mut a': i32
+[18; 91) '{     ...sion }': nothing
+[24; 25) 'a': i32
+[24; 30) 'a += 3': nothing
+[29; 30) '3': i32
+[36; 37) '3': i32
+[36; 41) '3 = 5': nothing
+[40; 41) '5': i32

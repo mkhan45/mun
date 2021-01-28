@@ -342,9 +342,20 @@ fn void_return() {
 fn place_expressions() {
     infer_snapshot(
         r#"
-    fn foo(a:i32) {
+    fn foo(mut a:i32) {
         a += 3;
         3 = 5; // error: invalid left hand side of expression
+    }
+    "#,
+    )
+}
+
+#[test]
+fn mutable_bindings() {
+    infer_snapshot(
+        r#"
+    fn foo(a:i32) {
+        a += 5; // error: cannot reassign to immutable pattern
     }
     "#,
     )
@@ -354,7 +365,7 @@ fn place_expressions() {
 fn update_operators() {
     infer_snapshot(
         r#"
-    fn foo(a:i32, b:f64) {
+    fn foo(mut a:i32, mut b:f64) {
         a += 3;
         a -= 3;
         a *= 3;
@@ -376,7 +387,7 @@ fn update_operators() {
 fn infer_unary_ops() {
     infer_snapshot(
         r#"
-    fn foo(a: i32, b: bool) {
+    fn foo(mut a: i32, mut b: bool) {
         a = -a;
         b = !b;
     }
@@ -388,7 +399,7 @@ fn infer_unary_ops() {
 fn invalid_unary_ops() {
     infer_snapshot(
         r#"
-    fn bar(a: f64, b: bool) {
+    fn bar(mut a: f64, mut b: bool) {
         a = !a; // mismatched type
         b = -b; // mismatched type
     }
@@ -428,7 +439,7 @@ fn infer_while() {
     infer_snapshot(
         r#"
     fn foo() {
-        let n = 0;
+        let mut n = 0;
         while n < 3 { n += 1; };
         while n < 3 { n += 1; break; };
         while n < 3 { break 3; };   // error: break with value can only appear in a loop
