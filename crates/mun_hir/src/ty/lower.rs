@@ -9,7 +9,7 @@ use crate::{
     resolve::Resolver,
     ty::{FnSig, Ty, TypeCtor},
     type_ref::{LocalTypeRefId, TypeRef, TypeRefMap, TypeRefSourceMap},
-    FileId, Function, HirDatabase, ModuleDef, Path, Struct, TypeAlias,
+    FileId, Function, HirDatabase, ModuleDef, Path, Struct, TypeAlias, ConstDef
 };
 use std::{ops::Index, sync::Arc};
 
@@ -98,6 +98,7 @@ impl Ty {
         let def = match ty {
             TypeNs::StructId(id) => TypableDef::Struct(id.into()),
             TypeNs::TypeAliasId(id) => TypableDef::TypeAlias(id.into()),
+            TypeNs::ConstDefId(id) => todo!(),
             TypeNs::PrimitiveType(id) => TypableDef::PrimitiveType(id),
         };
 
@@ -145,6 +146,7 @@ pub enum TypableDef {
     PrimitiveType(PrimitiveType),
     Struct(Struct),
     TypeAlias(TypeAlias),
+    ConstDef(ConstDef),
 }
 
 impl From<Function> for TypableDef {

@@ -1,4 +1,4 @@
-use crate::code_model::{Function, Struct, StructField, TypeAlias};
+use crate::code_model::{Function, Struct, StructField, TypeAlias, ConstDef};
 use crate::ids::{AssocItemLoc, Lookup};
 use crate::in_file::InFile;
 use crate::item_tree::{ItemTreeId, ItemTreeNode};

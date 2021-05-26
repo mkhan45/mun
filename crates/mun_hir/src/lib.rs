@@ -73,5 +73,5 @@ pub use crate::{
 use crate::{name::AsName, source_id::AstIdMap};
 
 pub use self::code_model::{
-    Function, FunctionData, Module, ModuleDef, Package, Struct, StructMemoryKind, TypeAlias,
+    Function, FunctionData, Module, ModuleDef, Package, Struct, StructMemoryKind, TypeAlias, ConstDef
 };

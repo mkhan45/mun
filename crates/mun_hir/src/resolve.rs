@@ -1,5 +1,5 @@
 use crate::ids::{
-    DefWithBodyId, FunctionId, ItemDefinitionId, Lookup, ModuleId, StructId, TypeAliasId,
+    DefWithBodyId, FunctionId, ItemDefinitionId, Lookup, ModuleId, StructId, TypeAliasId, ConstDefId,
 };
 use crate::module_tree::LocalModuleId;
 use crate::package_defs::PackageDefs;
@@ -55,6 +55,7 @@ pub enum ValueNs {
 pub enum TypeNs {
     StructId(StructId),
     TypeAliasId(TypeAliasId),
+    ConstDefId(ConstDefId),
     PrimitiveType(PrimitiveType),
 }
 
@@ -242,6 +243,7 @@ impl Resolver {
             let (res, vis) = match per_ns.take_types()? {
                 (ItemDefinitionId::StructId(id), vis) => (TypeNs::StructId(id), vis),
                 (ItemDefinitionId::TypeAliasId(id), vis) => (TypeNs::TypeAliasId(id), vis),
+                (ItemDefinitionId::ConstDefId(id), vis) => (TypeNs::ConstDefId(id), vis),
                 (ItemDefinitionId::PrimitiveType(id), vis) => (TypeNs::PrimitiveType(id), vis),
 
                 (ItemDefinitionId::ModuleId(_), _) | (ItemDefinitionId::FunctionId(_), _) => {

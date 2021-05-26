@@ -87,6 +87,7 @@ Grammar(
         // Extended keywords
         "let",
         "mut",
+        "const",
         "class",
         "struct",
         "never",
@@ -128,6 +129,7 @@ Grammar(
 
         "STRUCT_DEF",
         "TYPE_ALIAS_DEF",
+        "CONST_DEF",
         "MEMORY_TYPE_SPECIFIER",
         "RECORD_FIELD_DEF_LIST",
         "RECORD_FIELD_DEF",
@@ -175,7 +177,7 @@ Grammar(
             traits: [ "ModuleItemOwner", "FunctionDefOwner" ],
         ),
         "ModuleItem": (
-            enum: ["FunctionDef", "StructDef", "TypeAliasDef"]
+            enum: ["FunctionDef", "StructDef", "TypeAliasDef", "ConstDef"]
         ),
         "Visibility": (),
         "FunctionDef": (
@@ -208,6 +210,14 @@ Grammar(
             ]
         ),
         "TypeAliasDef": (
+            options: ["TypeRef"],
+            traits: [
+                "NameOwner",
+                "VisibilityOwner",
+                "DocCommentsOwner",
+            ]
+        ),
+        "ConstDef": (
             options: ["TypeRef"],
             traits: [
                 "NameOwner",

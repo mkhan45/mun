@@ -80,6 +80,7 @@ pub enum SyntaxKind {
     LOOP_KW,
     LET_KW,
     MUT_KW,
+    CONST_KW,
     CLASS_KW,
     STRUCT_KW,
     NEVER_KW,
@@ -108,6 +109,7 @@ pub enum SyntaxKind {
     PARAM,
     STRUCT_DEF,
     TYPE_ALIAS_DEF,
+    CONST_DEF,
     MEMORY_TYPE_SPECIFIER,
     RECORD_FIELD_DEF_LIST,
     RECORD_FIELD_DEF,
@@ -335,6 +337,9 @@ macro_rules! T {
     (mut) => {
         $crate::SyntaxKind::MUT_KW
     };
+    (const) => {
+        $crate::SyntaxKind::CONST_KW
+    };
     (class) => {
         $crate::SyntaxKind::CLASS_KW
     };
@@ -396,6 +401,7 @@ impl SyntaxKind {
         | LOOP_KW
         | LET_KW
         | MUT_KW
+        | CONST_KW
         | CLASS_KW
         | STRUCT_KW
         | NEVER_KW
@@ -535,6 +541,7 @@ impl SyntaxKind {
             LOOP_KW => &SyntaxInfo { name: "LOOP_KW" },
             LET_KW => &SyntaxInfo { name: "LET_KW" },
             MUT_KW => &SyntaxInfo { name: "MUT_KW" },
+            CONST_KW => &SyntaxInfo { name: "CONST_KW" },
             CLASS_KW => &SyntaxInfo { name: "CLASS_KW" },
             STRUCT_KW => &SyntaxInfo { name: "STRUCT_KW" },
             NEVER_KW => &SyntaxInfo { name: "NEVER_KW" },
@@ -563,6 +570,7 @@ impl SyntaxKind {
             PARAM => &SyntaxInfo { name: "PARAM" },
             STRUCT_DEF => &SyntaxInfo { name: "STRUCT_DEF" },
             TYPE_ALIAS_DEF => &SyntaxInfo { name: "TYPE_ALIAS_DEF" },
+            CONST_DEF => &SyntaxInfo { name: "CONST_DEF" },
             MEMORY_TYPE_SPECIFIER => &SyntaxInfo { name: "MEMORY_TYPE_SPECIFIER" },
             RECORD_FIELD_DEF_LIST => &SyntaxInfo { name: "RECORD_FIELD_DEF_LIST" },
             RECORD_FIELD_DEF => &SyntaxInfo { name: "RECORD_FIELD_DEF" },
@@ -619,6 +627,7 @@ impl SyntaxKind {
             "loop" => LOOP_KW,
             "let" => LET_KW,
             "mut" => MUT_KW,
+            "const" => CONST_KW,
             "class" => CLASS_KW,
             "struct" => STRUCT_KW,
             "never" => NEVER_KW,

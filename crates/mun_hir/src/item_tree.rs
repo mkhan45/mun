@@ -106,7 +106,7 @@ struct ItemTreeData {
     structs: Arena<Struct>,
     fields: Arena<Field>,
     type_aliases: Arena<TypeAlias>,
-
+    constants: Arena<Const>,
     visibilities: ItemVisibilities,
 }
 
@@ -222,6 +222,7 @@ mod_items! {
     Function in functions -> ast::FunctionDef,
     Struct in structs -> ast::StructDef,
     TypeAlias in type_aliases -> ast::TypeAliasDef,
+    Const in constants -> ast::ConstDef,
 }
 
 macro_rules! impl_index {
@@ -290,6 +291,14 @@ pub struct TypeAlias {
     pub visibility: RawVisibilityId,
     pub type_ref: Option<TypeRef>,
     pub ast_id: FileAstId<ast::TypeAliasDef>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Const {
+    pub name: Name,
+    pub visibility: RawVisibilityId,
+    pub type_ref: Option<TypeRef>,
+    pub ast_id: FileAstId<ast::ConstDef>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -412,6 +421,9 @@ mod diagnostics {
                         SyntaxNodePtr::new(item_tree.source(db, item).syntax())
                     }
                     ModItem::TypeAlias(item) => {
+                        SyntaxNodePtr::new(item_tree.source(db, item).syntax())
+                    }
+                    ModItem::Const(item) => {
                         SyntaxNodePtr::new(item_tree.source(db, item).syntax())
                     }
                 }

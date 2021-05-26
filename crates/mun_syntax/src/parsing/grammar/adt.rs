@@ -29,6 +29,19 @@ pub(super) fn type_alias_def(p: &mut Parser, m: Marker) {
     m.complete(p, TYPE_ALIAS_DEF);
 }
 
+pub(super) fn const_def(p: &mut Parser, m: Marker) {
+    assert!(p.eat(T![const]));
+    name(p);
+    if p.at(T![:]) {
+        types::ascription(p);
+    }
+    p.expect(T![=]);
+    expressions::expr(p);
+
+    p.expect(T![;]);
+    m.complete(p, CONST_DEF);
+}
+
 pub(super) fn record_field_def_list(p: &mut Parser) {
     assert!(p.at(T!['{']));
     let m = p.start();

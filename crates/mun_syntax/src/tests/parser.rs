@@ -388,6 +388,19 @@ fn type_alias_def() {
     "#,
     )
 }
+
+#[test]
+fn const_def() {
+    snapshot_test(
+        r#"
+    const PI = 3.1415;
+    pub const E: f32 = 2.718;
+    const FOO = PI + E;
+    pub const BAR = "a string";
+    "#,
+    )
+}
+
 #[test]
 fn function_return_path() {
     snapshot_test(

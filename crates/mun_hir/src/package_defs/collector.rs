@@ -1,10 +1,10 @@
 use super::PackageDefs;
 use crate::{
     arena::map::ArenaMap,
-    ids::{FunctionLoc, Intern, ItemDefinitionId, ModuleId, StructLoc, TypeAliasLoc},
+    ids::{FunctionLoc, Intern, ItemDefinitionId, ModuleId, StructLoc, TypeAliasLoc, ConstDefLoc},
     item_scope::ItemScope,
     item_tree::{
-        Function, ItemTree, ItemTreeId, LocalItemTreeId, ModItem, Struct, StructDefKind, TypeAlias,
+        Function, ItemTree, ItemTreeId, LocalItemTreeId, ModItem, Struct, StructDefKind, TypeAlias, Const
     },
     module_tree::{LocalModuleId, ModuleTree},
     visibility::RawVisibility,
@@ -113,6 +113,7 @@ impl<'a> ModCollectorContext<'a, '_> {
                 ModItem::Function(id) => self.collect_function(id),
                 ModItem::Struct(id) => self.collect_struct(id),
                 ModItem::TypeAlias(id) => self.collect_type_alias(id),
+                ModItem::Const(id) => self.collect_const(id),
             };
 
             if let Some(DefData {
@@ -189,6 +190,24 @@ impl<'a> ModCollectorContext<'a, '_> {
             .into(),
             name: &type_alias.name,
             visibility: &self.item_tree[type_alias.visibility],
+            has_constructor: false,
+        })
+    }
+
+    fn collect_const(&self, id: LocalItemTreeId<Const>) -> Option<DefData<'a>> {
+        let const_def = &self.item_tree[id];
+        Some(DefData {
+            id: ConstDefLoc {
+                module: ModuleId {
+                    package: self.def_collector.package_id,
+                    local_id: self.module_id,
+                },
+                id: ItemTreeId::new(self.file_id, id),
+            }
+            .intern(self.def_collector.db)
+            .into(),
+            name: &const_def.name,
+            visibility: &self.item_tree[const_def.visibility],
             has_constructor: false,
         })
     }

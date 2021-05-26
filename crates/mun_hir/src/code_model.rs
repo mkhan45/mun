@@ -4,6 +4,7 @@ mod package;
 pub(crate) mod src;
 mod r#struct;
 mod type_alias;
+mod const_def;
 
 use crate::{expr::BodySourceMap, HirDatabase, Name};
 use std::sync::Arc;

@@ -2,7 +2,7 @@
 
 use super::{
     diagnostics, Field, Fields, Function, IdRange, ItemTree, ItemTreeData, ItemTreeNode,
-    LocalItemTreeId, ModItem, RawVisibilityId, Struct, StructDefKind, TypeAlias,
+    LocalItemTreeId, ModItem, RawVisibilityId, Struct, StructDefKind, TypeAlias, Const
 };
 use crate::{
     arena::{Idx, RawId},
@@ -59,6 +59,7 @@ impl Context {
                 ModItem::Function(item) => &self.data.functions[item.index].name,
                 ModItem::Struct(item) => &self.data.structs[item.index].name,
                 ModItem::TypeAlias(item) => &self.data.type_aliases[item.index].name,
+                ModItem::Const(item) => &self.data.constants[item.index].name,
             };
             if let Some(first_item) = set.get(&name) {
                 self.diagnostics
@@ -86,6 +87,7 @@ impl Context {
             ast::ModuleItemKind::FunctionDef(ast) => self.lower_function(&ast).map(Into::into),
             ast::ModuleItemKind::StructDef(ast) => self.lower_struct(&ast).map(Into::into),
             ast::ModuleItemKind::TypeAliasDef(ast) => self.lower_type_alias(&ast).map(Into::into),
+            ast::ModuleItemKind::ConstDef(ast) => self.lower_const_def(&ast).map(Into::into),
         }
     }
 
@@ -214,6 +216,24 @@ impl Context {
             ast_id,
         };
         Some(self.data.type_aliases.alloc(res).into())
+    }
+
+    /// Lowers a type alias (e.g. `type Foo = Bar`)
+    fn lower_const_def(
+        &mut self,
+        const_def: &ast::ConstDef,
+    ) -> Option<LocalItemTreeId<Const>> {
+        let name = const_def.name()?.as_name();
+        let visibility = self.lower_visibility(const_def);
+        let type_ref = const_def.type_ref().map(|ty| self.lower_type_ref(&ty));
+        let ast_id = self.source_ast_id_map.ast_id(const_def);
+        let res = Const {
+            name,
+            visibility,
+            type_ref,
+            ast_id,
+        };
+        Some(self.data.constants.alloc(res).into())
     }
 
     /// Lowers an `ast::TypeRef`

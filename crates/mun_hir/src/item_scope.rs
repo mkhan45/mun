@@ -80,6 +80,7 @@ impl PerNs<(ItemDefinitionId, Visibility)> {
                 }
             }
             ItemDefinitionId::TypeAliasId(_) => PerNs::types((def, vis)),
+            ItemDefinitionId::ConstDefId(_) => PerNs::types((def, vis)),
             ItemDefinitionId::PrimitiveType(_) => PerNs::types((def, vis)),
             ItemDefinitionId::ModuleId(_) => PerNs::types((def, vis)),
         }

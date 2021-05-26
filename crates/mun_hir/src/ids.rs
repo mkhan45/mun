@@ -1,5 +1,5 @@
 use crate::{
-    item_tree::{Function, ItemTreeId, ItemTreeNode, Struct, TypeAlias},
+    item_tree::{Function, ItemTreeId, ItemTreeNode, Struct, TypeAlias, Const},
     module_tree::LocalModuleId,
     primitive_type::PrimitiveType,
     DefDatabase, PackageId,
@@ -128,6 +128,16 @@ impl_intern!(
     lookup_intern_type_alias
 );
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ConstDefId(salsa::InternId);
+pub(crate) type ConstDefLoc = AssocItemLoc<Const>;
+impl_intern!(
+    ConstDefId,
+    ConstDefLoc,
+    intern_const_def,
+    lookup_intern_const_def
+);
+
 pub trait Intern {
     type ID;
     fn intern(self, db: &dyn DefDatabase) -> Self::ID;
@@ -144,6 +154,7 @@ pub enum ItemDefinitionId {
     FunctionId(FunctionId),
     StructId(StructId),
     TypeAliasId(TypeAliasId),
+    ConstDefId(ConstDefId),
     PrimitiveType(PrimitiveType),
 }
 
@@ -165,6 +176,11 @@ impl From<StructId> for ItemDefinitionId {
 impl From<TypeAliasId> for ItemDefinitionId {
     fn from(id: TypeAliasId) -> Self {
         ItemDefinitionId::TypeAliasId(id)
+    }
+}
+impl From<ConstDefId> for ItemDefinitionId {
+    fn from(id: ConstDefId) -> Self {
+        ItemDefinitionId::ConstDefId(id)
     }
 }
 impl From<PrimitiveType> for ItemDefinitionId {
